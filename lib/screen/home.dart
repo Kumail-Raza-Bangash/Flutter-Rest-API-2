@@ -28,7 +28,10 @@ class _HomePageState extends State<HomePage> {
           final email = user.email;
 
           return ListTile(
-            title: Text(email),
+            leading: Text(user.name.first),
+            trailing: Text(user.nat),
+            title: Text(user.phone),
+            subtitle: Text(user.email),
           );
         }
         ),
@@ -47,12 +50,19 @@ class _HomePageState extends State<HomePage> {
     final results = json['results'] as List<dynamic>;
     
     final transformed = results.map((e) {
+
+      final name = UserName(
+        first: e['name']['first'], 
+        title: e['name']['title'], 
+        last: e['name']['last']);
+
         return User(
           cell: e['cell'],
           email: e['email'],
           gender: e['gender'],
           nat: e['nat'],
           phone: e['phone'],
+          name: name,
         );
       }).toList();
 
