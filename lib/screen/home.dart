@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rest_api_2/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
@@ -11,30 +12,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> users = [];
+  List<User> users = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Flutter Rest API 1"),
+        title: const Text("Flutter Rest API 2"),
       ),
       floatingActionButton: FloatingActionButton(onPressed: fetchUsers),
       body: ListView.builder(
         itemCount: users.length,
         itemBuilder: (content, index){
           final user = users[index];
-          final name = user['name']['first'];
-          final email = user['email'];
-          final imageUrl = user['picture']['thumbnail'];
+          final email = user.email;
 
           return ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child:  Image.network(imageUrl),
-            ),
-            title: Text(name),
-            subtitle: Text(email),
+            title: Text(email),
           );
         }
         ),
@@ -45,14 +39,25 @@ class _HomePageState extends State<HomePage> {
 
     print("FetchUser Called");
 
-    const url = 'https://randomuser.me/api/?results=14';
+    const url = 'https://randomuser.me/api/?results=100';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
     final json = jsonDecode(body);
+    final results = json['results'] as List<dynamic>;
+    
+    final transformed = results.map((e) {
+        return User(
+          cell: e['cell'],
+          email: e['email'],
+          gender: e['gender'],
+          nat: e['nat'],
+          phone: e['phone'],
+        );
+      }).toList();
 
     setState(() {
-      users = json['results'];
+      users = transformed;
     });
 
     print("FetchUser Completed");
