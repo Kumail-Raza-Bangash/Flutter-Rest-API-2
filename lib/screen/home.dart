@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
         itemCount: users.length,
         itemBuilder: (content, index){
           final user = users[index];
-          final email = user.email;
 
           return ListTile(
             leading: Text(user.name.first),
